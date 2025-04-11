@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}EMAM{% endblock %}</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        :root {
+            --main-color: #307c3c; /* Your desired green color */
+            --bg-color: white;
+            --text-color: black;
+        }
+
+        [data-theme="dark"] {
+            --bg-color: #222;
+            --text-color: #f8f9fa;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        .navbar {
+            display: flex;
+            justify-content: space-between; /* Ensure space between the logo and button */
+            align-items: center;
+            background-color: var(--main-color);
+        }
+
+        .navbar-text {
+            color: white;
+            font-size: 20px;
+            font-weight: bold;
+            text-align: center;
+            flex-grow: 1; /* Ensures this spans available space */
+        }
+
+        footer {
+            background-color: var(--main-color);
+            color: white;
+            padding: 1rem 0;
+            text-align: center;
+            margin-top: auto; /* Ensures footer stays at the bottom */
+        }
+
+        footer a {
+            color: white;
+            margin: 0 0.5rem;
+            text-decoration: none;
+        }
+
+        footer a:hover {
+            text-decoration: underline;
+        }
+
+        footer img {
+            max-height: 50px;
+            transition: transform 0.3s ease; /* Smooth transition for hover effect */
+        }
+
+        footer img:hover {
+            transform: scale(1.1); /* Slightly enlarges the logo when hovered */
+        }
+
+        /* Custom button style */
+        .btn-custom {
+            background-color: var(--main-color);
+            border-color: var(--main-color);
+            color: white;
+        }
+
+        .btn-custom:hover {
+            background-color: #25632f; /* Darker shade on hover */
+            border-color: #25632f;
+            color: white !important; /* Ensure the color stays white */
+        }
+
+    </style>
+</head>
+<body data-theme="light">
+    <nav class="navbar navbar-expand-lg">
+        <!-- Make "EMAM Research Center" a link to the homepage -->
+        <a class="navbar-brand" href="{{ url_for('home') }}?force_home=1">
+            <span class="navbar-text">EMAM Research Center Gate</span>
+        </a>
+
+        <!-- Dark mode toggle button -->
+        <div>
+            <button class="btn btn-outline-light" onclick="toggleTheme()">Toggle Dark Mode</button>
+        </div>
+    </nav>
+
+    <div class="container mt-4">
+        {% block content %}{% endblock %}
+    </div>
+
+    <footer>
+        <!-- Footer Links -->
+        <div>
+            <a href="https://www.facebook.com/alemam.ngo/" target="_blank">Facebook</a> |
+            <a href="https://www.linkedin.com/company/emam-organization-for-development-and-culture" target="_blank">LinkedIn</a>
+        </div>
+        <div>
+            &copy; 2025 EMAM Organization for Development and Culture
+        </div>
+        <!-- EMAM logo in the footer -->
+        <div>
+            <a href="https://www.emamngo.com/">
+                <img src="https://www.emamngo.com/web/image/301-4e62af40/Emamlogow.png" alt="EMAM Logo">
+            </a>
+        </div>
+    </footer>
+
+    <script>
+        // Function to toggle the theme and save the preference to localStorage
+        function toggleTheme() {
+            const body = document.body;
+            const currentTheme = body.getAttribute('data-theme');
+            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            body.setAttribute('data-theme', newTheme);
+            localStorage.setItem('theme', newTheme); // Save the theme preference
+        }
+
+        // Apply the saved theme when the page loads
+        window.onload = () => {
+            const savedTheme = localStorage.getItem('theme');
+            if (savedTheme) {
+                document.body.setAttribute('data-theme', savedTheme); // Apply the saved theme
+            }
+        }
+    </script>
+</body>
+</html>

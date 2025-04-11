@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+
+{% block title %}Add Grade{% endblock %}
+
+{% block content %}
+    <div class="container mt-5">
+        <!-- Add Green Styling to the Heading and Center it -->
+        <h2 class="text-custom text-center" style="color: #307c3c;">Add Grade for {{ user.username }}</h2>
+
+        <form method="POST">
+            <div class="form-group">
+                <label for="quiz_name">Quiz Name:</label>
+                <input type="text" name="quiz_name" class="form-control" required>
+            </div>
+            <div class="form-group">
+                <label for="score">Score:</label>
+                <input type="number" name="score" class="form-control" required>
+            </div>
+            <button type="submit" class="btn btn-custom mt-3" style="background-color: #307c3c; border-color: #307c3c;">Add Grade</button>
+        </form>
+
+        <a href="{{ url_for('view_grades', user_id=user.id) }}" class="btn btn-custom mt-3" style="background-color: #307c3c; border-color: #307c3c;">Back to Grades</a>
+    </div>
+{% endblock %}

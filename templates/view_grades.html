@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+
+{% block title %}Grades for {{ user.username }}{% endblock %}
+
+{% block content %}
+    <div class="container mt-5">
+        <h2 style="color: var(--main-color);">Grades for {{ user.username }}</h2>
+
+        {% if grades %}
+            <table class="table table-bordered mt-4">
+                <thead>
+                    <tr>
+                        <th>Quiz Name</th>
+                        <th>Score</th>
+                        <th>Date Taken</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for grade in grades %}
+                        <tr>
+                            <td>{{ grade.quiz_name }}</td>
+                            <td>{{ grade.score }}</td>
+                            <td>{{ grade.date_taken.strftime('%Y-%m-%d %H:%M') }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% else %}
+            <p>No grades found.</p>
+        {% endif %}
+
+        {% if current_user.is_admin %}
+            <a href="{{ url_for('add_grade', user_id=user.id) }}" class="btn btn-custom mt-3">Add New Grade</a>
+        {% endif %}
+
+        <a href="{{ url_for('home') }}?force_home=1" class="btn btn-custom mt-3">Back to Home</a>
+    </div>
+{% endblock %}

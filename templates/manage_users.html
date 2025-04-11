@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+
+{% block title %}Manage Users{% endblock %}
+
+{% block content %}
+    <div class="container mt-5">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                <div class="flash-message">
+                    {% for category, message in messages %}
+                        <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+                            {{ message }}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        {% endwith %}
+
+        <h2 style="color: var(--main-color);">All Users</h2>
+
+        <table class="table table-bordered mt-4">
+            <thead>
+                <tr>
+                    <th>Username</th>
+                    <th>Is Admin?</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for user in users %}
+                <tr>
+                    <td>{{ user.username }}</td>
+                    <td>{{ "Yes" if user.is_admin else "No" }}</td>
+                    <td>
+                        <form action="{{ url_for('remove_user', id=user.id) }}" method="POST" style="display:inline;">
+                            <button type="submit" class="btn btn-danger btn-sm">Remove</button>
+                        </form>
+                        <form action="{{ url_for('toggle_admin', id=user.id) }}" method="POST" style="display:inline;">
+                            <button type="submit" class="btn btn-custom btn-sm">Toggle Admin</button>
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <a href="{{ url_for('add_user') }}" class="btn btn-custom mt-3">Add New User</a><br>
+        <a href="{{ url_for('home') }}?force_home=1" class="btn btn-custom mt-3">Back to Home</a>
+
+        <form action="{{ url_for('logout') }}" method="POST" class="mt-3">
+            <button type="submit" class="btn btn-danger btn-sm">Logout</button>
+        </form>
+    </div>
+{% endblock %}

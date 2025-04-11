@@ -1,0 +1,169 @@
+{% extends 'base.html' %}
+
+{% block title %}EMAM Research Center{% endblock %}
+
+{% block content %}
+    <style>
+        /* Custom Styles for Service Items */
+        .services {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            flex-wrap: wrap;
+            margin-top: 50px; /* Added margin to lower the cards */
+        }
+
+        .service-item {
+            background-color: #ffffff;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            text-align: center;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            width: 200px;
+            margin-bottom: 20px; /* Added margin to the bottom of each card */
+        }
+
+        .service-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+        }
+
+        .service-item .icon {
+            font-size: 40px;
+            margin-bottom: 15px;
+        }
+
+        .service-item h3 {
+            font-size: 18px;
+            color: #333;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .service-item p {
+            font-size: 14px;
+            color: #666;
+        }
+
+        /* Button Customization */
+        .btn-custom {
+            background-color: var(--main-color);
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 5px;
+            font-size: 16px;
+            transition: background-color 0.3s ease;
+        }
+
+        .btn-custom:hover {
+        }
+
+        .btn-custom:focus {
+            outline: none;
+            box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Logout Button */
+        .logout-btn {
+            margin-top: 20px;
+        }
+
+        /* Footer Styling (Optional for Footer Section) */
+        .footer {
+            text-align: center;
+            padding: 20px;
+            background-color: #f8f9fa;
+            position: relative;
+        }
+    </style>
+
+    <div class="container mt-5">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                <div class="flash-message">
+                    {% for category, message in messages %}
+                        <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+                            {{ message }}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        {% endwith %}
+
+        {% if current_user.is_authenticated %}
+            <div class="text-center">
+                <h2 style="color: var(--main-color);">Welcome, {{ user.username }}!</h2>
+
+                <!-- Service Items -->
+                <div class="services">
+                    <div class="service-item item-cyan">
+                        <a href="{{ url_for('view_grades', user_id=user.id) }}">
+                            <div class="icon">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" fill="currentColor" class="bi bi-pencil" viewBox="0 0 16 16">
+                                    <path d="M12.146.354a3 3 0 0 0-4.242 0l-.707.707-1.415-1.415.707-.707a4.5 4.5 0 0 1 6.364 6.364l-.707.707-1.415-1.415.707-.707zM3 12v2h2l8-8-2-2-8 8H3z"/>                                </svg>
+                            </div>
+                            <h3>View My Grades</h3>
+                            <p>Monitor your academic performance.</p>
+                        </a>
+                    </div>
+
+                    {% if user.is_admin %}
+                        <div class="service-item item-teal">
+                            <a href="{{ url_for('manage_users') }}">
+                                <div class="icon">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" fill="currentColor" class="bi bi-person-fill" viewBox="0 0 16 16">
+                                        <path d="M8 0a4 4 0 1 0 4 4 4 4 0 0 0-4-4zm0 5a3 3 0 1 1-3 3 3 3 0 0 1 3-3zM2 8a6 6 0 0 1 12 0v6a3 3 0 0 1-3 3H5a3 3 0 0 1-3-3V8z"/>
+                                    </svg>
+                                </div>
+                                <h3>Manage Users</h3>
+                                <p>Admin control panel for user management.</p>
+                            </a>
+                        </div>
+                    {% endif %}
+
+                    {% if user.is_admin %}
+                        <div class="service-item item-cyan">
+                            <a href="{{ url_for('add_grade', user_id=user.id) }}">
+                                <div class="icon">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" fill="currentColor" class="bi bi-pencil" viewBox="0 0 16 16">
+                                        <path d="M12.146.354a3 3 0 0 0-4.242 0l-.707.707-1.415-1.415.707-.707a4.5 4.5 0 0 1 6.364 6.364l-.707.707-1.415-1.415.707-.707zM3 12v2h2l8-8-2-2-8 8H3z"/>                                </svg>
+                                </div>
+                                <h3>Add Grades</h3>
+                                <p>Admin tool to modify user grades.</p>
+                            </a>
+                        </div>
+                    {% endif %}
+                </div>
+
+                <!-- Logout Button -->
+                <div class="logout-btn">
+                    <form action="{{ url_for('logout') }}" method="POST" class="d-inline">
+                        <button type="submit" class="btn btn-danger btn-sm">Logout</button>
+                    </form>
+                </div>
+            </div>
+        {% else %}
+            <div class="row justify-content-center">
+                <div class="col-md-6 col-lg-5">
+                    <div class="form-container">
+                        <h3 class="text-center mb-4" style="color: var(--main-color);">Login to view your account</h3>
+                        <form method="POST" action="{{ url_for('home') }}">
+                            <div class="mb-3">
+                                <label for="user_id" class="form-label">User ID</label>
+                                <input type="text" name="user_id" class="form-control" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="password" class="form-label">Password</label>
+                                <input type="password" name="password" class="form-control" required>
+                            </div>
+                            <button type="submit" class="btn btn-custom w-100">Login</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+    </div>
+{% endblock %}
