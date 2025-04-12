@@ -49,12 +49,13 @@ class User(UserMixin):
 
 # Grade class representing a single quiz result
 class Grade:
-    def __init__(self, id, user_id, quiz_name, score):
+    def __init__(self, id, user_id, quiz_name, score, paper_url):
         self.id = id
         self.user_id = user_id
         self.quiz_name = quiz_name
         self.score = score
         self.status = "Passed" if score >= 14.5 else "Failed"
+        self.paper_url = paper_url
 
     def __repr__(self):
         return f"<Grade {self.quiz_name} - {self.score} for user {self.user_id}, Status: {self.status}>"
@@ -63,7 +64,7 @@ class Grade:
     def get_by_user(cls, user_id):
         # Fetch all grades for the user
         results = supabase.table('grades').select('*').eq('user_id', user_id).execute()
-        return [cls(g['id'], g['user_id'], g['quiz_name'], g['score']) for g in results.data]
+        return [cls(g['id'], g['user_id'], g['quiz_name'], g['score'], g['paper_url']) for g in results.data]
 
 
     @classmethod
