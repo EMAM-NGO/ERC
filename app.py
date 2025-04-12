@@ -210,7 +210,3 @@ def view_grades(user_id):
     user = User.get(user_id)
     grades = Grade.get_by_user(user_id)
     return render_template('view_grades.html', user=user, grades=grades)
-
-
-if __name__ == '__main__':
-    app.run(debug=True)
