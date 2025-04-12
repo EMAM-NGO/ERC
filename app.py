@@ -1,14 +1,19 @@
 from flask import Flask, render_template, request, redirect, url_for, flash
 from flask_login import UserMixin, LoginManager, login_user, login_required, current_user, logout_user
 from supabase import create_client, Client
+import os
 
 # Initialize Flask app
-app = Flask(__name__)  # Fix: __name__ not _name_
-app.config['SECRET_KEY'] = 'thisisasecretkey!'  # Replace with an environment variable for production
+app = Flask(__name__)  
+app.config['SECRET_KEY'] = os.getenv('SECRET_KEY', 'thisisasecretkey!')  # Default to a hardcoded key if not set in env vars
 
-# Initialize Supabase client (replace these with env vars in production)
-url = "https://dboshtybstvkfarrsfxd.supabase.co"
-key = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRib3NodHlic3R2a2ZhcnJzZnhkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDQzODk2NzIsImV4cCI6MjA1OTk2NTY3Mn0.VzjD0QvZdgXx9cOMha-E666zU2DR_CuqFazSzlIdqMM"  # ⚠ Do not expose keys in source code
+# Initialize Supabase client using environment variables
+url = os.getenv("SUPABASE_URL")  # Get Supabase URL from environment variable
+key = os.getenv("SUPABASE_KEY")  # Get Supabase Key from environment variable
+
+if not url or not key:
+    raise ValueError("Supabase URL or Key is not set in environment variables")
+
 supabase: Client = create_client(url, key)
 
 # Configure Flask-Login
