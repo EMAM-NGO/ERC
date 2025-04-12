@@ -12,7 +12,7 @@
                     <tr>
                         <th>Quiz Name</th>
                         <th>Score</th>
-                        <th>Date Taken</th>
+                        <th>Status</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -20,7 +20,7 @@
                         <tr>
                             <td>{{ grade.quiz_name }}</td>
                             <td>{{ grade.score }}</td>
-                            <td>{{ grade.date_taken.strftime('%Y-%m-%d %H:%M') }}</td>
+                            <td>{{ grade.status }}</td>
                         </tr>
                     {% endfor %}
                 </tbody>
