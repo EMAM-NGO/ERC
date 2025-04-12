@@ -23,7 +23,7 @@ login_manager.init_app(app)
 # User class representing a single user
 class User(UserMixin):
     def __init__(self, id, username, password, is_admin=False):
-        self.id = str(id)  # Flask-Login expects id to be str
+        self.id = str(id)
         self.username = username
         self.password = password
         self.is_admin = is_admin
@@ -49,36 +49,29 @@ class User(UserMixin):
 
 # Grade class representing a single quiz result
 class Grade:
-    def __init__(self, id, user_id, quiz_name, score, max_score, percentage, date_taken):
+    def __init__(self, id, user_id, quiz_name, score):
         self.id = id
         self.user_id = user_id
         self.quiz_name = quiz_name
         self.score = score
-        self.max_score = max_score
-        self.percentage = percentage
-        self.date_taken = date_taken
+        self.status = "Passed" if score >= 14.5 else "Failed"
 
     def __repr__(self):
-        return f"<Grade {self.quiz_name} - {self.score} for user {self.user_id}>"
-
-    def calculate_percentage(self):
-        self.percentage = (self.score / self.max_score) * 100 if self.max_score > 0 else 0
+        return f"<Grade {self.quiz_name} - {self.score} for user {self.user_id}, Status: {self.status}>"
 
     @classmethod
     def get_by_user(cls, user_id):
+        # Fetch all grades for the user
         results = supabase.table('grades').select('*').eq('user_id', user_id).execute()
-        return [cls(g['id'], g['user_id'], g['quiz_name'], g['score'], g['max_score'], g['percentage'], g['date_taken']) for g in results.data]
+        return [cls(g['id'], g['user_id'], g['quiz_name'], g['score']) for g in results.data]
+
 
     @classmethod
-    def add_grade(cls, user_id, quiz_name, score, max_score, date_taken):
-        percentage = (score / max_score) * 100 if max_score > 0 else 0
+    def add_grade(cls, user_id, quiz_name, score):
         data = {
             'user_id': user_id,
             'quiz_name': quiz_name,
             'score': score,
-            'max_score': max_score,
-            'percentage': percentage,
-            'date_taken': date_taken
         }
         supabase.table('grades').insert(data).execute()
 
@@ -95,7 +88,7 @@ def home():
         return render_template('home.html', user=current_user)
 
     if request.method == 'POST':
-        user_id = request.form.get("user_id")  # Change from username to user_id
+        user_id = request.form.get("user_id")
         password = request.form.get("password")
 
         if not user_id or not password:
@@ -127,6 +120,7 @@ def add_user():
         return redirect(url_for('home'))
 
     if request.method == 'POST':
+        user_id = request.form['id']
         username = request.form["username"]
         password = request.form["password"]
 
@@ -135,6 +129,7 @@ def add_user():
             return redirect(url_for('add_user'))
 
         user_data = {
+            'id': user_id,
             'username': username,
             'password': password,
             'is_admin': False
@@ -197,11 +192,9 @@ def add_grade(user_id):
 
     if request.method == 'POST':
         quiz_name = request.form['quiz_name']
-        score = int(request.form['score'])
-        max_score = int(request.form['max_score'])
-        date_taken = request.form['date_taken']
+        score = float(request.form['score'])
 
-        Grade.add_grade(user_id, quiz_name, score, max_score, date_taken)
+        Grade.add_grade(user_id, quiz_name, score)
         flash("✅ Grade added successfully.", "success")
         return redirect(url_for('view_grades', user_id=user_id))
 
@@ -217,6 +210,7 @@ def view_grades(user_id):
     user = User.get(user_id)
     grades = Grade.get_by_user(user_id)
     return render_template('view_grades.html', user=user, grades=grades)
+
 
 if __name__ == '__main__':
     app.run(debug=True)
