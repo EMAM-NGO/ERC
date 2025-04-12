@@ -22,7 +22,9 @@
                             <td>{{ grade.quiz_name }}</td>
                             <td>{{ grade.score }}</td>
                             <td>{{ grade.status }}</td>
-                            <td>{{ grade.paper_url }}</td>
+                            <td>
+                                <a href="{{ grade.paper_url }}" class="btn btn-success" download>Download Paper</a>
+                            </td>
                         </tr>
                     {% endfor %}
                 </tbody>
