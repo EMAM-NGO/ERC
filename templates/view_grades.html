@@ -13,6 +13,7 @@
                         <th>Quiz Name</th>
                         <th>Score</th>
                         <th>Status</th>
+                        <th>View Your Paper</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -21,6 +22,7 @@
                             <td>{{ grade.quiz_name }}</td>
                             <td>{{ grade.score }}</td>
                             <td>{{ grade.status }}</td>
+                            <td>{{ grade.paper_url }}</td>
                         </tr>
                     {% endfor %}
                 </tbody>
