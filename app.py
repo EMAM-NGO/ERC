@@ -49,13 +49,13 @@ class User(UserMixin):
 
 # Grade class representing a single quiz result
 class Grade:
-    def __init__(self, id, user_id, quiz_name, score, bonus, final_score, paper_url):
+    def __init__(self, id, user_id, quiz_name, grade, bonus, final_grade, paper_url):
         self.id = id
         self.user_id = user_id
         self.quiz_name = quiz_name
-        self.score = score
+        self.grade = grade
         self.bonus = bonus
-        self.final_score = final_score
+        self.final_grade = final_grade
         self.status = "Passed" if score >= 16 else "Failed"
         self.paper_url = paper_url
 
