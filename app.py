@@ -5,7 +5,7 @@ import os
 
 # Initialize Flask app
 app = Flask(__name__)  
-app.config['SECRET_KEY'] = os.getenv('SECRET_KEY', 'thisisasecretkey!')  # Default to a hardcoded key if not set in env vars
+app.config['SECRET_KEY'] = os.getenv('SECRET_KEY')
 
 # Initialize Supabase client using environment variables
 url = os.getenv("SUPABASE_URL")  # Get Supabase URL from environment variable
@@ -49,12 +49,14 @@ class User(UserMixin):
 
 # Grade class representing a single quiz result
 class Grade:
-    def __init__(self, id, user_id, quiz_name, score, paper_url):
+    def __init__(self, id, user_id, quiz_name, score, bonus, final_score, paper_url):
         self.id = id
         self.user_id = user_id
         self.quiz_name = quiz_name
         self.score = score
-        self.status = "Passed" if score >= 14.5 else "Failed"
+        self.bonus = bonus
+        self.final_score = final_score
+        self.status = "Passed" if score >= 16 else "Failed"
         self.paper_url = paper_url
 
     def __repr__(self):
@@ -64,7 +66,7 @@ class Grade:
     def get_by_user(cls, user_id):
         # Fetch all grades for the user
         results = supabase.table('grades').select('*').eq('user_id', user_id).execute()
-        return [cls(g['id'], g['user_id'], g['quiz_name'], g['score'], g['paper_url']) for g in results.data]
+        return [cls(g['id'], g['user_id'], g['quiz_name'], g['score'], g['bonus'], g['final_score'], g['paper_url']) for g in results.data]
 
 
     @classmethod
