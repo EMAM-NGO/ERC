@@ -11,7 +11,10 @@
                 <thead>
                     <tr>
                         <th>Quiz Name</th>
-                        <th>Score</th>
+                        <th>Grade (out of 20)</th>
+                        <th>Bonus</th>
+                        <th>Grade</th>
+                        <th>Final Grade</th>
                         <th>Status</th>
                         <th>View Your Paper</th>
                     </tr>
@@ -20,7 +23,9 @@
                     {% for grade in grades %}
                         <tr>
                             <td>{{ grade.quiz_name }}</td>
-                            <td>{{ grade.score }}</td>
+                            <td>{{ grade.grade }}</td>
+                            <td>{{ grade.bonus }}</td>
+                            <td>{{ grade.final_grade }}</td>
                             <td>{{ grade.status }}</td>
                             <td>
                                 <a href="{{ grade.paper_url }}" class="btn btn-success" download>View Paper</a>
