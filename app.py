@@ -56,25 +56,25 @@ class Grade:
         self.grade = grade
         self.bonus = bonus
         self.final_grade = final_grade
-        self.status = "Passed" if score >= 16 else "Failed"
+        self.status = "Passed" if grade >= 16 else "Failed"
         self.paper_url = paper_url
 
     def __repr__(self):
-        return f"<Grade {self.quiz_name} - {self.score} for user {self.user_id}, Status: {self.status}>"
+        return f"<Grade {self.quiz_name} - {self.grade} for user {self.user_id}, Status: {self.status}>"
 
     @classmethod
     def get_by_user(cls, user_id):
         # Fetch all grades for the user
         results = supabase.table('grades').select('*').eq('user_id', user_id).execute()
-        return [cls(g['id'], g['user_id'], g['quiz_name'], g['score'], g['bonus'], g['final_score'], g['paper_url']) for g in results.data]
+        return [cls(g['id'], g['user_id'], g['quiz_name'], g['grade'], g['bonus'], g['final_grade'], g['paper_url']) for g in results.data]
 
 
     @classmethod
-    def add_grade(cls, user_id, quiz_name, score):
+    def add_grade(cls, user_id, quiz_name, grade):
         data = {
             'user_id': user_id,
             'quiz_name': quiz_name,
-            'score': score,
+            'grade': grade,
         }
         supabase.table('grades').insert(data).execute()
 
@@ -195,9 +195,9 @@ def add_grade(user_id):
 
     if request.method == 'POST':
         quiz_name = request.form['quiz_name']
-        score = float(request.form['score'])
+        grade = float(request.form['grade'])
 
-        Grade.add_grade(user_id, quiz_name, score)
+        Grade.add_grade(user_id, quiz_name, grade)
         flash("✅ Grade added successfully.", "success")
         return redirect(url_for('view_grades', user_id=user_id))
 
